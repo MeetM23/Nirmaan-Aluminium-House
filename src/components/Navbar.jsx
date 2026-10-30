@@ -1,18 +1,16 @@
 // src/components/Navbar.jsx
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { NavLink, Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Phone, Mail, ArrowRight } from 'lucide-react';
 import Logo from './Logo';
-import { products } from '../data/products';
 import { businessConfig } from '../config/business';
 
 const navLinks = [
   { to: '/', label: 'Home', exact: true },
-  { to: '/about', label: 'About' },
-  { to: '/products', label: 'Products', hasDropdown: true },
   { to: '/services', label: 'Services' },
+  { to: '/products', label: 'Products' },
   { to: '/projects', label: 'Projects' },
+  { to: '/about', label: 'About' },
   { to: '/why-us', label: 'Why Us' },
   { to: '/contact', label: 'Contact' },
 ];
@@ -20,233 +18,196 @@ const navLinks = [
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [productsOpen, setProductsOpen] = useState(false);
-
   const location = useLocation();
-  const sidebarRef = useRef(null);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 24);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menus on route change
-  useEffect(() => {
-    // oxlint-disable-next-line react/set-state-in-effect
+  // Close mobile nav on route change (adjusted during render per React guidelines)
+  const [prevPath, setPrevPath] = useState(location.pathname);
+  if (prevPath !== location.pathname) {
+    setPrevPath(location.pathname);
     setMobileOpen(false);
-    // oxlint-disable-next-line react/set-state-in-effect
-    setProductsOpen(false);
-  }, [location.pathname]);
+  }
 
-  // Lock body scroll when sidebar is open
+  // Lock body scroll when mobile menu is open
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
     return () => {
       document.body.style.overflow = '';
     };
   }, [mobileOpen]);
 
-  const navBg = scrolled
-    ? 'bg-[#061411]/95 backdrop-blur-md shadow-lg shadow-black/20'
-    : 'bg-[#061411]/80 backdrop-blur-sm';
+  const isHome = location.pathname === '/';
+  const headerBgClass = scrolled
+    ? 'bg-[#F5F4F1]/95 backdrop-blur-md border-b border-[#E4E2DC] shadow-[0_1px_0_0_rgba(21,23,27,0.06)]'
+    : isHome
+    ? 'bg-transparent border-b border-transparent'
+    : 'bg-[#F5F4F1] border-b border-[#E4E2DC]';
+
+  const textColorClass = isHome && !scrolled ? 'text-white' : 'text-[#3A3D44]';
+  // Transparent header over dark hero image uses light logo; sticky off-white & internal pages use dark logo
+  const isDarkHeader = isHome && !scrolled;
+  const logoVariant = isDarkHeader ? 'light' : 'dark';
 
   return (
     <>
-      {/* ===== Desktop / Mobile Topbar ===== */}
       <header
-        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${navBg} border-b border-white/5`}
+        className={`fixed top-0 left-0 right-0 z-40 transition-colors duration-200 ${headerBgClass}`}
         role="banner"
       >
         <nav
-          className="max-w-[1400px] mx-auto px-6 lg:px-10 h-[72px] flex items-center justify-between"
+          className="site-container h-20 flex items-center justify-between"
           role="navigation"
           aria-label="Main navigation"
         >
-          {/* Logo */}
-          <Logo />
+          {/* Logo with visual weight balance */}
+          <div className="flex-shrink-0">
+            <Logo variant={logoVariant} />
+          </div>
 
-          {/* Desktop links */}
-          <ul className="hidden lg:flex items-center gap-8" role="list">
-            {navLinks.map((link) => (
-              <li key={link.to} role="listitem">
-                <NavLink
-                  to={link.to}
-                  end={link.exact}
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active' : ''}`
-                  }
-                >
-                  {link.label}
-                </NavLink>
-              </li>
-            ))}
-          </ul>
+          {/* Right cluster: Nav links + CTA with generous spacing (≥36px gap before CTA) */}
+          <div className="flex items-center gap-9 lg:gap-10">
+            {/* Desktop Navigation Links */}
+            <ul className="hidden lg:flex items-center gap-7" role="list">
+              {navLinks.map((link) => (
+                <li key={link.to} role="listitem">
+                  <NavLink
+                    to={link.to}
+                    end={link.exact}
+                    className={({ isActive }) =>
+                      `relative text-[15px] font-medium py-1 transition-colors duration-150 group ${
+                        isActive
+                          ? isHome && !scrolled
+                            ? 'text-white font-semibold'
+                            : 'text-[#15171B] font-semibold'
+                          : `${textColorClass} hover:text-[#15171B]`
+                      }`
+                    }
+                  >
+                    {({ isActive }) => (
+                      <>
+                        <span>{link.label}</span>
+                        {/* 1px underline growing on hover, solid on active */}
+                        <span
+                          className={`absolute bottom-0 left-0 h-[1px] transition-all duration-150 ${
+                            isActive
+                              ? isHome && !scrolled
+                                ? 'w-full bg-white'
+                                : 'w-full bg-[#15171B]'
+                              : 'w-0 group-hover:w-full bg-[#A8ACB3]'
+                          }`}
+                        />
+                      </>
+                    )}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
 
-          {/* Action Icons & CTA */}
-          <div className="flex items-center gap-3 md:gap-4">
-            {/* Desktop Get Quote */}
-            <Link
-              to="/contact"
-              className="hidden sm:inline-flex btn-outline-gold text-xs py-2 px-4"
-              id="nav-get-quote-btn"
-            >
-              Get a Quote <ArrowRight size={13} />
-            </Link>
+            {/* Right Action: Clean text link "Get a quote →" with vertically centered mono arrow */}
+            <div className="flex items-center gap-4">
+              <Link
+                to="/contact"
+                className={`hidden sm:inline-flex items-center gap-1.5 text-[15px] font-medium transition-opacity hover:opacity-80 py-1 ${
+                  isHome && !scrolled ? 'text-white' : 'text-[#15171B]'
+                }`}
+                id="nav-get-quote-link"
+              >
+                <span>Get a quote</span>
+                <span className="font-mono text-xs leading-none inline-flex items-center">→</span>
+              </Link>
 
-            {/* Mobile Hamburger */}
-            <button
-              onClick={() => setMobileOpen(true)}
-              className="lg:hidden p-2 text-white/80 hover:text-[#C9A15A] transition-colors"
-              aria-label="Open mobile menu"
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-sidebar"
-              id="hamburger-btn"
-            >
-              <Menu size={24} />
-            </button>
+              {/* Mobile Nav Hamburger */}
+              <button
+                type="button"
+                onClick={() => setMobileOpen(true)}
+                className={`lg:hidden p-2 text-xs font-mono uppercase tracking-wider font-semibold transition ${
+                  isHome && !scrolled ? 'text-white' : 'text-[#15171B]'
+                }`}
+                aria-label="Open navigation menu"
+                aria-expanded={mobileOpen}
+              >
+                <span className="border border-current px-2.5 py-1 rounded-sm">Menu</span>
+              </button>
+            </div>
           </div>
         </nav>
       </header>
 
-      {/* ===== Mobile Sidebar Overlay ===== */}
+      {/* ── Refined Full-screen Mobile Nav Overlay (design.md §5.1 & §6) ── */}
       <AnimatePresence>
         {mobileOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div
-              key="overlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden"
-              onClick={() => setMobileOpen(false)}
-              aria-hidden="true"
-            />
+          <motion.div
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={{ duration: 0.3, ease: [0.22, 0.61, 0.36, 1] }}
+            className="fixed inset-0 z-50 bg-[#F5F4F1] flex flex-col justify-between p-6 sm:p-10 lg:hidden overflow-y-auto"
+            role="dialog"
+            aria-modal="true"
+            aria-label="Mobile Navigation"
+          >
+            {/* Top Bar with Logo & Close affordance */}
+            <div className="flex items-center justify-between border-b border-[#E4E2DC] pb-4">
+              <Logo variant="dark" />
+              <button
+                type="button"
+                onClick={() => setMobileOpen(false)}
+                className="font-mono text-xs uppercase tracking-wider text-[#15171B] font-bold p-2 hover:opacity-70 transition"
+                aria-label="Close menu"
+              >
+                Close ✕
+              </button>
+            </div>
 
-            {/* Sidebar */}
-            <motion.aside
-              id="mobile-sidebar"
-              ref={sidebarRef}
-              key="sidebar"
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 35 }}
-              className="fixed top-0 left-0 bottom-0 z-[70] w-[310px] flex flex-col lg:hidden overflow-y-auto"
-              style={{ background: 'linear-gradient(180deg, #0A1F1A 0%, #061411 100%)' }}
-              aria-label="Mobile navigation"
-              role="dialog"
-              aria-modal="true"
-            >
-              {/* Sidebar Header */}
-              <div className="flex items-center justify-between px-5 py-5 border-b border-white/10">
-                <Logo />
-                <button
-                  onClick={() => setMobileOpen(false)}
-                  className="p-2 text-white/60 hover:text-[#C9A15A] transition-colors"
-                  aria-label="Close mobile menu"
-                  id="close-sidebar-btn"
-                >
-                  <X size={20} />
-                </button>
-              </div>
-
-              {/* Nav Links */}
-              <nav className="flex-1 px-4 py-4" aria-label="Mobile navigation links">
-                <ul className="space-y-1" role="list">
-                  {navLinks.map((link) => (
-                    <li key={link.to} role="listitem">
-                      {link.hasDropdown ? (
-                        <div>
-                          <button
-                            onClick={() => setProductsOpen(!productsOpen)}
-                            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-white/80 hover:text-[#C9A15A] hover:bg-white/5 rounded transition-all"
-                            aria-expanded={productsOpen}
-                            aria-controls="mobile-products-dropdown"
-                            id="mobile-products-btn"
-                          >
-                            <span>Products</span>
-                            <ChevronDown
-                              size={16}
-                              className={`transition-transform duration-300 ${productsOpen ? 'rotate-180' : ''}`}
-                            />
-                          </button>
-                          <AnimatePresence>
-                            {productsOpen && (
-                              <motion.ul
-                                id="mobile-products-dropdown"
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                transition={{ duration: 0.25 }}
-                                className="overflow-hidden ml-4 mt-1 space-y-0.5 border-l border-[#C9A15A]/20"
-                                role="list"
-                              >
-                                {products.map((p) => (
-                                  <li key={p.slug} role="listitem">
-                                    <Link
-                                      to={`/products/${p.slug}`}
-                                      className="flex items-center gap-2 pl-4 py-2 text-xs text-white/60 hover:text-[#C9A15A] transition-colors"
-                                    >
-                                      <span className="text-[#C9A15A] font-mono text-[10px]">{p.number}</span>
-                                      {p.name}
-                                    </Link>
-                                  </li>
-                                ))}
-                              </motion.ul>
-                            )}
-                          </AnimatePresence>
-                        </div>
-                      ) : (
-                        <NavLink
-                          to={link.to}
-                          end={link.exact}
-                          className={({ isActive }) =>
-                            `flex items-center px-4 py-3 text-sm font-medium rounded transition-all ${
-                              isActive
-                                ? 'text-[#C9A15A] bg-white/5'
-                                : 'text-white/80 hover:text-[#C9A15A] hover:bg-white/5'
-                            }`
-                          }
-                        >
-                          {link.label}
-                        </NavLink>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-
-                <div className="mt-6 px-1">
-                  <Link
-                    to="/contact"
-                    className="btn-gold w-full justify-center text-xs py-3"
+            {/* Stacked Links in Fraunces with 32px gaps */}
+            <div className="py-10 space-y-7">
+              {navLinks.map((link) => (
+                <div key={link.to}>
+                  <NavLink
+                    to={link.to}
+                    end={link.exact}
+                    onClick={() => setMobileOpen(false)}
+                    className={({ isActive }) =>
+                      `font-display text-3xl sm:text-4xl block transition-colors ${
+                        isActive
+                          ? 'text-[#15171B] font-medium underline underline-offset-8 decoration-1 decoration-[#A8ACB3]'
+                          : 'text-[#3A3D44] hover:text-[#15171B]'
+                      }`
+                    }
                   >
-                    Request a Quote <ArrowRight size={14} />
-                  </Link>
+                    {link.label}
+                  </NavLink>
                 </div>
-              </nav>
+              ))}
+            </div>
 
-              {/* Contact Info */}
-              <div className="px-5 py-4 space-y-2.5 border-t border-white/10 bg-black/20">
-                <a
-                  href={`tel:${businessConfig.phoneClean}`}
-                  className="flex items-center gap-3 text-xs text-white/70 hover:text-[#C9A15A] transition-colors"
+            {/* Bottom Contact & Workshop Meta in Mono */}
+            <div className="border-t border-[#E4E2DC] pt-6 space-y-2 text-xs font-mono text-[#6B6F76]">
+              <div className="flex justify-between items-center text-[#15171B] font-semibold">
+                <span>Workshop: Anand, Gujarat</span>
+                <Link
+                  to="/contact"
+                  onClick={() => setMobileOpen(false)}
+                  className="underline underline-offset-2"
                 >
-                  <Phone size={13} className="text-[#C9A15A]" />
-                  <span>{businessConfig.phone}</span>
-                </a>
-                <a
-                  href={`mailto:${businessConfig.email}`}
-                  className="flex items-center gap-3 text-xs text-white/70 hover:text-[#C9A15A] transition-colors"
-                >
-                  <Mail size={13} className="text-[#C9A15A]" />
-                  <span>{businessConfig.email}</span>
-                </a>
+                  Direct Inquiry →
+                </Link>
               </div>
-            </motion.aside>
-          </>
+              <p>Email: {businessConfig.email}</p>
+              <p>Phone: {businessConfig.phone}</p>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
