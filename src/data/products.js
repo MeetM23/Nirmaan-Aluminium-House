@@ -1,5 +1,5 @@
 // src/data/products.js
-// Central data file for all products — includes pricing, units, variants, and gallery
+// Central data file for all products — architectural fabrication specifications, finishes, materials and galleries
 
 export const products = [
   {
@@ -12,20 +12,17 @@ export const products = [
     description:
       'Our stainless steel railings combine strength, safety and modern aesthetics, making them ideal for residential, commercial and industrial spaces. With high-grade stainless steel and precision fabrication, we ensure long-lasting performance and a premium look.',
     image: '/images/products/ss-railing.jpg',
-    price: 850,
-    unit: 'per running ft',
-    minQty: 10,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom running ft',
     variants: {
       finish: [
-        { name: 'Satin', priceMultiplier: 1.0 },
-        { name: 'Mirror', priceMultiplier: 1.08 },
-        { name: 'PVD Gold', priceMultiplier: 1.35 },
-        { name: 'Brushed', priceMultiplier: 1.05 },
+        { name: 'Satin' },
+        { name: 'Mirror' },
+        { name: 'PVD Gold' },
+        { name: 'Brushed' },
       ],
       material: [
-        { name: 'SS 304', priceMultiplier: 1.0 },
-        { name: 'SS 316', priceMultiplier: 1.22 },
+        { name: 'SS 304' },
+        { name: 'SS 316' },
       ],
     },
     features: [
@@ -60,19 +57,16 @@ export const products = [
     description:
       'Our aluminium balconies offer a perfect combination of lightweight strength and architectural elegance. Featuring toughened glass panels within precision-crafted aluminium frames, they transform ordinary balconies into statement spaces that add value and visual appeal to any building.',
     image: '/images/products/alum-balcony.jpg',
-    price: 1200,
-    unit: 'per sq ft',
-    minQty: 20,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom sq ft',
     variants: {
       finish: [
-        { name: 'Powder Coated Matt Black', priceMultiplier: 1.0 },
-        { name: 'Anodized Champagne', priceMultiplier: 1.15 },
-        { name: 'Wood Finish Grain', priceMultiplier: 1.25 },
+        { name: 'Powder Coated Matt Black' },
+        { name: 'Anodized Champagne' },
+        { name: 'Wood Finish Grain' },
       ],
       material: [
-        { name: 'Aluminium 6063 T5', priceMultiplier: 1.0 },
-        { name: 'Heavy Duty 6061 T6', priceMultiplier: 1.2 },
+        { name: 'Aluminium 6063 T5' },
+        { name: 'Heavy Duty 6061 T6' },
       ],
     },
     features: [
@@ -107,19 +101,16 @@ export const products = [
     description:
       'Nirmaan\'s aluminium railings are engineered to deliver outstanding performance in demanding environments. Lightweight yet robust, our horizontal-slat and vertical-post aluminium railings complement modern architectural styles while providing reliable safety for terraces, staircases and walkways.',
     image: '/images/products/alum-railing.jpg',
-    price: 750,
-    unit: 'per running ft',
-    minQty: 15,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom running ft',
     variants: {
       finish: [
-        { name: 'Powder Coated Black', priceMultiplier: 1.0 },
-        { name: 'Anodized Silver', priceMultiplier: 1.1 },
-        { name: 'Dark Bronze', priceMultiplier: 1.18 },
+        { name: 'Powder Coated Black' },
+        { name: 'Anodized Silver' },
+        { name: 'Dark Bronze' },
       ],
       material: [
-        { name: 'Alum 6063 T5', priceMultiplier: 1.0 },
-        { name: 'Alum 6061 T6', priceMultiplier: 1.15 },
+        { name: 'Alum 6063 T5' },
+        { name: 'Alum 6061 T6' },
       ],
     },
     features: [
@@ -154,19 +145,16 @@ export const products = [
     description:
       'Make a powerful first impression with our premium stainless steel sliding and openable gates. Crafted from heavy-gauge SS 304/316 with a precision horizontal-louvre design, these gates offer maximum security without compromising on aesthetics — perfect for luxury residences, commercial premises and industrial sites.',
     image: '/images/products/ss-gate.jpg',
-    price: 28500,
-    unit: 'per piece',
-    minQty: 1,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Bespoke gate',
     variants: {
       finish: [
-        { name: 'Matte Black Louvre', priceMultiplier: 1.0 },
-        { name: 'Mirror Finish', priceMultiplier: 1.12 },
-        { name: 'PVD Coated Gold Accents', priceMultiplier: 1.3 },
+        { name: 'Matte Black Louvre' },
+        { name: 'Mirror Finish' },
+        { name: 'PVD Coated Gold Accents' },
       ],
       material: [
-        { name: 'SS 304 Heavy Gauge', priceMultiplier: 1.0 },
-        { name: 'SS 316 Marine Grade', priceMultiplier: 1.25 },
+        { name: 'SS 304 Heavy Gauge' },
+        { name: 'SS 316 Marine Grade' },
       ],
     },
     features: [
@@ -201,19 +189,16 @@ export const products = [
     description:
       'Transform your staircase into a focal point with our exquisitely crafted aluminium staircase railings. Available in a range of profiles and finishes including brushed gold, matte black and custom powder-coated colours, our railings pair seamlessly with glass treads, wooden steps and marble staircases alike.',
     image: '/images/products/alum-staircase.jpg',
-    price: 950,
-    unit: 'per running ft',
-    minQty: 10,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom running ft',
     variants: {
       finish: [
-        { name: 'Brushed Gold', priceMultiplier: 1.2 },
-        { name: 'Matte Black', priceMultiplier: 1.0 },
-        { name: 'Silver Anodized', priceMultiplier: 1.05 },
+        { name: 'Brushed Gold' },
+        { name: 'Matte Black' },
+        { name: 'Silver Anodized' },
       ],
       material: [
-        { name: 'Standard Extruded Alloy', priceMultiplier: 1.0 },
-        { name: 'Reinforced Steel Insert', priceMultiplier: 1.2 },
+        { name: 'Standard Extruded Alloy' },
+        { name: 'Reinforced Steel Insert' },
       ],
     },
     features: [
@@ -248,20 +233,17 @@ export const products = [
     description:
       'Our PVD (Physical Vapour Deposition) coated stainless steel products add a touch of opulence to any interior. Available in gold, rose-gold, black and champagne finishes, our PVD work covers decorative panels, partitions, door frames, cladding and reception counters — delivering a mirror-like luxury finish that resists scratches, tarnishing and corrosion.',
     image: '/images/products/pvd-work.jpg',
-    price: 3200,
-    unit: 'per sq ft',
-    minQty: 10,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom architectural surface',
     variants: {
       finish: [
-        { name: 'Mirror Gold', priceMultiplier: 1.0 },
-        { name: 'Rose Gold', priceMultiplier: 1.05 },
-        { name: 'Black Titanium', priceMultiplier: 1.1 },
-        { name: 'Champagne Bronze', priceMultiplier: 1.08 },
+        { name: 'Mirror Gold' },
+        { name: 'Rose Gold' },
+        { name: 'Black Titanium' },
+        { name: 'Champagne Bronze' },
       ],
       material: [
-        { name: 'SS 304 Sheet Clad', priceMultiplier: 1.0 },
-        { name: 'SS 316 Solid Panel', priceMultiplier: 1.25 },
+        { name: 'SS 304 Sheet Clad' },
+        { name: 'SS 316 Solid Panel' },
       ],
     },
     features: [
@@ -296,20 +278,17 @@ export const products = [
     description:
       'Our CNC and laser-cut stainless steel work brings intricate artistry to metal. From traditional jali screens and decorative gates to modern geometric panels and room dividers, our precision CNC cutting enables complex designs that traditional fabrication cannot achieve — delivering stunning visual impact with structural integrity.',
     image: '/images/products/cnc-work.jpg',
-    price: 1800,
-    unit: 'per sq ft',
-    minQty: 10,
-    priceNote: 'Final price may vary after site measurement.',
+    unit: 'Custom CNC fabrication',
     variants: {
       finish: [
-        { name: 'Natural Brushed SS', priceMultiplier: 1.0 },
-        { name: 'PVD Gold Coated', priceMultiplier: 1.4 },
-        { name: 'Powder Coated Black', priceMultiplier: 1.05 },
+        { name: 'Natural Brushed SS' },
+        { name: 'PVD Gold Coated' },
+        { name: 'Powder Coated Black' },
       ],
       material: [
-        { name: 'SS 304 (2mm Gauge)', priceMultiplier: 1.0 },
-        { name: 'SS 304 (3mm Heavy)', priceMultiplier: 1.3 },
-        { name: 'SS 316 (3mm Marine)', priceMultiplier: 1.55 },
+        { name: 'SS 304 (2mm Gauge)' },
+        { name: 'SS 304 (3mm Heavy)' },
+        { name: 'SS 316 (3mm Marine)' },
       ],
     },
     features: [

@@ -1,48 +1,26 @@
 // src/App.jsx
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { lazy, Suspense, useEffect } from 'react';
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
-
-import { AuthProvider } from './context/AuthContext';
-import { CartProvider } from './context/CartContext';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WhatsAppButton from './components/WhatsAppButton';
-import CartDrawer from './components/CartDrawer';
-import ProtectedRoute from './components/ProtectedRoute';
 
-// Public pages
-import Home from './pages/Home';
-import About from './pages/About';
-import Products from './pages/Products';
-import ProductDetail from './pages/ProductDetail';
-import Projects from './pages/Projects';
-import WhyUs from './pages/WhyUs';
-import Services from './pages/Services';
-import Contact from './pages/Contact';
+// Public pages (lazy loaded)
+const Home = lazy(() => import('./pages/Home'));
+const About = lazy(() => import('./pages/About'));
+const Products = lazy(() => import('./pages/Products'));
+const ProductDetail = lazy(() => import('./pages/ProductDetail'));
+const Services = lazy(() => import('./pages/Services'));
+const Projects = lazy(() => import('./pages/Projects'));
+const WhyUs = lazy(() => import('./pages/WhyUs'));
+const Contact = lazy(() => import('./pages/Contact'));
 
-// E-commerce & Checkout pages
-import Cart from './pages/Cart';
-import Checkout from './pages/Checkout';
-import OrderSuccess from './pages/OrderSuccess';
-import InvoicePage from './pages/InvoicePage';
+// Standalone Internal Admin Invoice Generator (Zero auth, isolated route)
+const AdminDashboard = lazy(() => import('./admin/pages/AdminDashboard'));
 
-// Auth pages
-import Login from './pages/Login';
-import Register from './pages/Register';
-
-// Customer Account pages
-import AccountLayout from './pages/account/AccountLayout';
-import Dashboard from './pages/account/Dashboard';
-import Profile from './pages/account/Profile';
-import Addresses from './pages/account/Addresses';
-import Orders from './pages/account/Orders';
-import OrderDetail from './pages/account/OrderDetail';
-import Wishlist from './pages/account/Wishlist';
-
-// Scroll to top on route change
+// Smooth scroll to top on route change
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -51,81 +29,57 @@ function ScrollToTop() {
   return null;
 }
 
+// Lightweight route transition fallback
+function PageLoader({ isAdmin = false }) {
+  return (
+    <div
+      className={`min-h-screen flex items-center justify-center ${
+        isAdmin ? 'bg-[#F5F2EB]' : 'bg-[#061411]'
+      }`}
+    >
+      <div
+        className={`w-8 h-8 rounded-full border-2 animate-spin ${
+          isAdmin
+            ? 'border-neutral-300 border-t-neutral-800'
+            : 'border-[#C9A15A]/20 border-t-[#C9A15A]'
+        }`}
+      />
+    </div>
+  );
+}
+
 function AppLayout() {
   const location = useLocation();
-  // Don't show footer on invoice printable page for ultra-clean view
-  const isInvoicePage = location.pathname.includes('/invoice');
+  const isAdmin = location.pathname.startsWith('/admin');
 
   return (
     <>
       <ScrollToTop />
-      {!isInvoicePage && <Navbar />}
-      <CartDrawer />
+      {!isAdmin && <Navbar />}
 
-      <Routes>
-        {/* Core Marketing Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/products" element={<Products />} />
-        <Route path="/products/:slug" element={<ProductDetail />} />
-        <Route path="/projects" element={<Projects />} />
-        <Route path="/why-us" element={<WhyUs />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/contact" element={<Contact />} />
+      <Suspense fallback={<PageLoader isAdmin={isAdmin} />}>
+        <Routes>
+          {/* Public Website Routes */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/products" element={<Products />} />
+          <Route path="/products/:slug" element={<ProductDetail />} />
+          <Route path="/services" element={<Services />} />
+          <Route path="/projects" element={<Projects />} />
+          <Route path="/why-us" element={<WhyUs />} />
+          <Route path="/contact" element={<Contact />} />
 
-        {/* E-Commerce Routes */}
-        <Route path="/cart" element={<Cart />} />
-        <Route
-          path="/checkout"
-          element={
-            <ProtectedRoute>
-              <Checkout />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/order-success/:orderId"
-          element={
-            <ProtectedRoute>
-              <OrderSuccess />
-            </ProtectedRoute>
-          }
-        />
+          {/* Standalone Internal Admin Invoice Generator */}
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
 
-        {/* Invoice Page */}
-        <Route
-          path="/account/orders/:orderId/invoice"
-          element={
-            <ProtectedRoute>
-              <InvoicePage />
-            </ProtectedRoute>
-          }
-        />
+          {/* Graceful 404 redirection */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
 
-        {/* Auth Routes */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Customer Account Routes */}
-        <Route
-          path="/account"
-          element={
-            <ProtectedRoute>
-              <AccountLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Dashboard />} />
-          <Route path="profile" element={<Profile />} />
-          <Route path="addresses" element={<Addresses />} />
-          <Route path="orders" element={<Orders />} />
-          <Route path="orders/:orderId" element={<OrderDetail />} />
-          <Route path="wishlist" element={<Wishlist />} />
-        </Route>
-      </Routes>
-
-      {!isInvoicePage && <Footer />}
-      {!isInvoicePage && <WhatsAppButton />}
+      {!isAdmin && <Footer />}
+      {!isAdmin && <WhatsAppButton />}
     </>
   );
 }
@@ -133,26 +87,9 @@ function AppLayout() {
 export default function App() {
   return (
     <HelmetProvider>
-      <AuthProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <Toaster
-              position="top-right"
-              toastOptions={{
-                duration: 3500,
-                style: {
-                  background: '#0A1F1A',
-                  color: '#EFEBDD',
-                  border: '1px solid rgba(201, 161, 90, 0.4)',
-                  fontSize: '13px',
-                  fontFamily: 'Inter, sans-serif',
-                },
-              }}
-            />
-            <AppLayout />
-          </BrowserRouter>
-        </CartProvider>
-      </AuthProvider>
+      <BrowserRouter>
+        <AppLayout />
+      </BrowserRouter>
     </HelmetProvider>
   );
 }

@@ -2,7 +2,7 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Gem, CheckCircle, Users, Clock, Award, Target } from 'lucide-react';
+import { ArrowRight, Gem, Users, Award, Target } from 'lucide-react';
 
 const milestones = [
   { year: '2014', event: 'Founded in Anand, Gujarat with a small team of 5 fabricators.' },

@@ -2,8 +2,8 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Award, CheckCircle, Users, Clock, Headphones, MapPin, Star } from 'lucide-react';
-import { whyUsPoints, testimonials } from '../data/products';
+import { ArrowRight, Award, CheckCircle, Users, Clock, Headphones, MapPin } from 'lucide-react';
+import { whyUsPoints } from '../data/products';
 
 const iconMap = { Award, CheckCircle, Users, Clock, Headphones, MapPin };
 

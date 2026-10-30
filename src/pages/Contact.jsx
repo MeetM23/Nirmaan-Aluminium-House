@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'framer-motion';
 import { ArrowRight, Phone, Mail, MapPin, Clock, CheckCircle } from 'lucide-react';
 import { products } from '../data/products';
+import { businessConfig } from '../config/business';
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -15,7 +16,7 @@ export default function Contact() {
   const validate = () => {
     const errs = {};
     if (!form.name.trim()) errs.name = 'Name is required';
-    if (!form.phone.trim() || !/^\+?[\d\s\-]{8,}$/.test(form.phone)) errs.phone = 'Valid phone required';
+    if (!form.phone.trim() || !/^\+?[\d\s-]{8,}$/.test(form.phone)) errs.phone = 'Valid phone required';
     if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email';
     if (!form.message.trim()) errs.message = 'Message is required';
     return errs;
@@ -38,10 +39,10 @@ export default function Contact() {
   };
 
   const contactInfo = [
-    { Icon: Phone, label: 'Phone', value: '+91 98765 43210', href: 'tel:+919876543210', sub: 'Mon–Sat, 9:00 AM–7:00 PM' },
-    { Icon: Mail, label: 'Email', value: 'info@nirmaanaluminium.com', href: 'mailto:info@nirmaanaluminium.com' },
-    { Icon: MapPin, label: 'Address', value: 'Anand, Gujarat, India', sub: 'Serving Residential, Commercial & Industrial Spaces' },
-    { Icon: Clock, label: 'Hours', value: 'Mon–Sat: 9:00 AM–7:00 PM' },
+    { Icon: Phone, label: 'Phone', value: businessConfig.phone, href: `tel:${businessConfig.phoneClean}`, sub: businessConfig.workingHours },
+    { Icon: Mail, label: 'Email', value: businessConfig.email, href: `mailto:${businessConfig.email}` },
+    { Icon: MapPin, label: 'Address', value: `${businessConfig.address.city}, ${businessConfig.address.state}, ${businessConfig.address.country}`, sub: 'Serving Residential, Commercial & Industrial Spaces' },
+    { Icon: Clock, label: 'Hours', value: businessConfig.workingHours },
   ];
 
   return (

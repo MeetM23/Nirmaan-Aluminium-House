@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight, ChevronLeft, ChevronRight,
-  Gem, ShieldCheck, Building2, Award, CheckCircle,
-  Users, Clock, Headphones, MapPin, Star, Quote
+  Gem, ShieldCheck, Building2, CheckCircle,
+  Users, Clock, Star, Quote
 } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import { products, projects, testimonials, whyUsPoints } from '../data/products';
@@ -48,17 +48,17 @@ const heroFeatures = [
 // ─── Hero Section ─────────────────────────────────────────────────────────────
 function HeroSection() {
   const [current, setCurrent] = useState(0);
-  const [direction, setDirection] = useState(1);
+
 
   const goTo = useCallback((idx) => {
-    setDirection(idx > current ? 1 : -1);
+
     setCurrent(idx);
-  }, [current]);
+  }, []);
 
   // Autoplay
   useEffect(() => {
     const timer = setInterval(() => {
-      setDirection(1);
+
       setCurrent((prev) => (prev + 1) % heroSlides.length);
     }, 5000);
     return () => clearInterval(timer);

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Clock, ArrowRight } from 'lucide-react';
 import Logo from './Logo';
 import { products } from '../data/products';
+import { businessConfig } from '../config/business';
 
 // Inline social SVG icons
 const InstagramIcon = () => (
@@ -23,8 +24,10 @@ const YoutubeIcon = () => (
     <polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/>
   </svg>
 );
+
+const currentYear = new Date().getFullYear();
+
 export default function Footer() {
-  const year = new Date().getFullYear();
 
   return (
     <footer className="bg-[#061411] border-t border-white/[0.06]" role="contentinfo">
@@ -41,9 +44,9 @@ export default function Footer() {
             {/* Socials */}
             <div className="flex items-center gap-3 mt-6">
               {[
-                { Icon: InstagramIcon, label: 'Instagram', href: '#' },
-                { Icon: FacebookIcon, label: 'Facebook', href: '#' },
-                { Icon: YoutubeIcon, label: 'YouTube', href: '#' },
+                { Icon: InstagramIcon, label: 'Instagram', href: businessConfig.social.instagram },
+                { Icon: FacebookIcon, label: 'Facebook', href: businessConfig.social.facebook },
+                { Icon: YoutubeIcon, label: 'YouTube', href: businessConfig.social.youtube },
               ].map(({ Icon, label, href }) => (
                 <a
                   key={label}
@@ -67,9 +70,9 @@ export default function Footer() {
                 { to: '/', label: 'Home' },
                 { to: '/about', label: 'About Us' },
                 { to: '/products', label: 'Products' },
+                { to: '/services', label: 'Services' },
                 { to: '/projects', label: 'Projects' },
                 { to: '/why-us', label: 'Why Us' },
-                { to: '/services', label: 'Services' },
                 { to: '/contact', label: 'Contact' },
               ].map(({ to, label }) => (
                 <li key={to} role="listitem">
@@ -112,25 +115,25 @@ export default function Footer() {
             </h3>
             <ul className="space-y-4" role="list">
               <li>
-                <a href="tel:+919876543210" className="flex items-start gap-3 text-sm text-white/50 hover:text-[#C9A15A] transition-colors">
+                <a href={`tel:${businessConfig.phoneClean}`} className="flex items-start gap-3 text-sm text-white/50 hover:text-[#C9A15A] transition-colors">
                   <Phone size={15} className="text-[#C9A15A] flex-shrink-0 mt-0.5" />
                   <div>
-                    <div>+91 98765 43210</div>
-                    <div className="text-xs text-white/30 mt-0.5">Mon–Sat, 9:00 AM–7:00 PM</div>
+                    <div>{businessConfig.phone}</div>
+                    <div className="text-xs text-white/30 mt-0.5">{businessConfig.workingHours}</div>
                   </div>
                 </a>
               </li>
               <li>
-                <a href="mailto:info@nirmaanaluminium.com" className="flex items-start gap-3 text-sm text-white/50 hover:text-[#C9A15A] transition-colors">
+                <a href={`mailto:${businessConfig.email}`} className="flex items-start gap-3 text-sm text-white/50 hover:text-[#C9A15A] transition-colors">
                   <Mail size={15} className="text-[#C9A15A] flex-shrink-0 mt-0.5" />
-                  info@nirmaanaluminium.com
+                  {businessConfig.email}
                 </a>
               </li>
               <li>
                 <div className="flex items-start gap-3 text-sm text-white/50">
                   <MapPin size={15} className="text-[#C9A15A] flex-shrink-0 mt-0.5" />
                   <div>
-                    Anand, Gujarat, India<br />
+                    {businessConfig.address.city}, {businessConfig.address.state}, {businessConfig.address.country}<br />
                     <span className="text-xs text-white/30">Serving Residential, Commercial &amp; Industrial Spaces</span>
                   </div>
                 </div>
@@ -138,7 +141,7 @@ export default function Footer() {
               <li>
                 <div className="flex items-start gap-3 text-sm text-white/50">
                   <Clock size={15} className="text-[#C9A15A] flex-shrink-0 mt-0.5" />
-                  Monday–Saturday, 9:00 AM–7:00 PM
+                  {businessConfig.workingHours}
                 </div>
               </li>
             </ul>
@@ -150,7 +153,7 @@ export default function Footer() {
       <div className="border-t border-white/[0.06]">
         <div className="max-w-[1400px] mx-auto px-6 lg:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-white/30">
-            &copy; {year} Nirmaan Aluminium House. All rights reserved.
+            &copy; {currentYear} Nirmaan Aluminium House. All rights reserved.
           </p>
           <p className="text-xs text-white/30">
             Designed with ❤ in Anand, Gujarat

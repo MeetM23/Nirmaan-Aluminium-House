@@ -248,3 +248,43 @@
     animation: shimmer 1.5s infinite;
   }
 }
+
+/* Print Optimization for Invoice Sheet */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  body, html {
+    background: #EFEBDD !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body * {
+    visibility: hidden;
+  }
+
+  #modal-printable-invoice,
+  #modal-printable-invoice *,
+  .invoice-a4-sheet,
+  .invoice-a4-sheet * {
+    visibility: visible;
+  }
+
+  #modal-printable-invoice,
+  .invoice-a4-sheet {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 10mm 14mm !important;
+    box-shadow: none !important;
+    background: #EFEBDD !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

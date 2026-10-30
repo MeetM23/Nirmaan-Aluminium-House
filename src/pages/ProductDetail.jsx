@@ -5,19 +5,17 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import {
   ArrowRight, ChevronLeft, ChevronRight, X,
-  Maximize2, ShieldCheck, Gem, Sparkles, Settings, Download,
-  ShoppingBag, Heart, Plus, Minus, Check, Info
+  ShieldCheck, Gem, Sparkles, Settings, Check, MessageSquare
 } from 'lucide-react';
 import { getProductBySlug, getRelatedProducts } from '../data/products';
 import ProductCard from '../components/ProductCard';
-import { useCart } from '../context/CartContext';
-import { formatINR } from '../utils/pricing';
+import { businessConfig } from '../config/business';
 
 // Icon map
 const iconMap = { ShieldCheck, Gem, Sparkles, Settings };
 
 // ─── Quote Modal ─────────────────────────────────────────────────────────────
-function QuoteModal({ product, onClose, selectedVariant, currentPrice, quantity }) {
+function QuoteModal({ product, onClose, selectedVariant }) {
   const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
   const [sent, setSent] = useState(false);
 
@@ -72,7 +70,7 @@ function QuoteModal({ product, onClose, selectedVariant, currentPrice, quantity 
               Request a Custom Quote
             </h3>
             <p className="text-xs text-[#6B6B6B] mb-4">
-              {product.name} • {selectedVariant} ({quantity} {product.unit?.replace('per ', '')})
+              {product.name} • {selectedVariant}
             </p>
             <form onSubmit={handleSubmit} className="space-y-3.5">
               <div>
@@ -134,30 +132,18 @@ export default function ProductDetail() {
   const product = getProductBySlug(slug);
   const related = getRelatedProducts(slug, 4);
 
-  const { addToCart, toggleWishlist, isInWishlist } = useCart();
-
   const [mainImg, setMainImg] = useState(0);
   const [galleryIdx, setGalleryIdx] = useState(0);
   const [quoteOpen, setQuoteOpen] = useState(false);
 
   // Variant selection states
-  const finishes = product?.variants?.finish || [{ name: 'Standard', priceMultiplier: 1.0 }];
-  const materials = product?.variants?.material || [{ name: 'Standard', priceMultiplier: 1.0 }];
+  const finishes = product?.variants?.finish || [{ name: 'Standard' }];
+  const materials = product?.variants?.material || [{ name: 'Standard' }];
 
   const [selectedFinish, setSelectedFinish] = useState(finishes[0]);
   const [selectedMaterial, setSelectedMaterial] = useState(materials[0]);
-  const [quantity, setQuantity] = useState(product?.minQty || 1);
 
   if (!product) return <Navigate to="/products" replace />;
-
-  const isFavorited = isInWishlist(product.id);
-
-  // Calculate live unit price based on multipliers
-  const basePrice = product.price || 1000;
-  const finishMultiplier = selectedFinish?.priceMultiplier || 1.0;
-  const materialMultiplier = selectedMaterial?.priceMultiplier || 1.0;
-  const liveUnitPrice = Math.round(basePrice * finishMultiplier * materialMultiplier);
-  const liveTotal = liveUnitPrice * quantity;
 
   const allImages = [product.image, ...product.gallery.map((g) => g.image)];
 
@@ -168,21 +154,10 @@ export default function ProductDetail() {
   const prevGallery = () => setGalleryIdx((i) => Math.max(0, i - 1));
   const nextGallery = () => setGalleryIdx((i) => Math.min(product.gallery.length - galleryVisible, i + 1));
 
-  const handleAddToCart = () => {
-    addToCart({
-      id: product.id,
-      productId: product.id,
-      slug: product.slug,
-      name: product.name,
-      variant: `${selectedFinish.name} • ${selectedMaterial.name}`,
-      finish: selectedFinish.name,
-      material: selectedMaterial.name,
-      unit: product.unit || 'per sq ft',
-      unitPrice: liveUnitPrice,
-      quantity,
-      image: product.image,
-    });
-  };
+  const variantSummary = `${selectedFinish.name} • ${selectedMaterial.name}`;
+  const whatsappUrl = `https://wa.me/${businessConfig.phoneClean.replace('+', '')}?text=${encodeURIComponent(
+    `Hello Nirmaan Team, I am interested in a quotation for ${product.name} (${variantSummary}). Please contact me.`
+  )}`;
 
   return (
     <>
@@ -216,19 +191,6 @@ export default function ProductDetail() {
                     transition={{ duration: 0.3 }}
                   />
                 </AnimatePresence>
-
-                {/* Floating Wishlist Button */}
-                <button
-                  onClick={() => toggleWishlist(product.id)}
-                  className={`absolute top-3.5 right-3.5 w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-md transition shadow-md z-10 ${
-                    isFavorited
-                      ? 'bg-red-500 text-white'
-                      : 'bg-white/90 text-[#1A1A1A] hover:bg-white hover:text-red-500'
-                  }`}
-                  aria-label="Wishlist"
-                >
-                  <Heart size={18} fill={isFavorited ? 'currentColor' : 'none'} />
-                </button>
               </div>
 
               {/* Thumbnail strip */}
@@ -271,11 +233,11 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Right: Details & E-Commerce Selector */}
+            {/* Right: Details & Consultation Options */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="eyebrow">Product Fabrication</p>
-                <span className="text-xs uppercase tracking-widest font-semibold px-2.5 py-1 bg-[#C9A15A]/15 text-[#8F6E28] rounded">
+                <span className="text-xs uppercase tracking-widest font-semibold px-2.5 py-1 bg-[#C9A15A]/15 text-[#8F6E28] rounded font-mono">
                   {product.number}
                 </span>
               </div>
@@ -286,30 +248,20 @@ export default function ProductDetail() {
                 {product.description}
               </p>
 
-              {/* Pricing Display */}
+              {/* Consultation Info Box */}
               <div className="p-4 bg-white/80 backdrop-blur-sm border border-[#1A1A1A]/10 rounded-xl mb-6 shadow-sm">
-                <div className="flex items-baseline justify-between mb-1">
-                  <div>
-                    <span className="text-xs text-[#6B6B6B] block">Rate per unit:</span>
-                    <span className="font-serif text-2xl font-bold text-[#1A1A1A]">
-                      {formatINR(liveUnitPrice)}
-                    </span>
-                    <span className="text-xs text-[#6B6B6B] ml-1.5 font-sans">
-                      / {product.unit?.replace('per ', '') || 'unit'}
-                    </span>
+                <p className="font-serif text-lg font-semibold text-[#1A1A1A] mb-1">
+                  Bespoke Fabrication &amp; Site Installation
+                </p>
+                <p className="text-xs text-[#6B6B6B] leading-relaxed">
+                  Every project is custom engineered to exact site dimensions. Contact our Anand technical team for site measurements, material samples, and detailed quotation.
+                </p>
+                {product.unit && (
+                  <div className="mt-3 inline-flex items-center gap-1.5 text-xs font-medium text-[#8F6E28] bg-[#C9A15A]/10 px-2.5 py-1 rounded">
+                    <span>Specification:</span>
+                    <span className="font-semibold">{product.unit}</span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-xs text-[#6B6B6B] block">Estimated Total:</span>
-                    <span className="font-serif text-xl font-bold text-[#8F6E28]">
-                      {formatINR(liveTotal)}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-1.5 text-[11px] text-[#8F6E28] mt-2 pt-2 border-t border-[#1A1A1A]/5">
-                  <Info size={12} className="shrink-0" />
-                  <span>{product.priceNote || 'Final price may vary after site measurement.'}</span>
-                </div>
+                )}
               </div>
 
               {/* Variant Selectors: Finish */}
@@ -368,61 +320,27 @@ export default function ProductDetail() {
                 </div>
               )}
 
-              {/* Quantity Stepper */}
-              <div className="mb-8 flex items-center gap-4">
-                <div>
-                  <label className="block text-xs font-semibold text-[#1A1A1A] mb-1.5 uppercase tracking-wider">
-                    Quantity ({product.unit?.replace('per ', '') || 'unit'})
-                  </label>
-                  <div className="flex items-center border border-[#1A1A1A]/20 rounded-lg bg-white overflow-hidden shadow-sm">
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => Math.max(product.minQty || 1, q - 1))}
-                      className="px-3 py-2 text-[#1A1A1A] hover:bg-[#1A1A1A]/5 transition"
-                      aria-label="Decrease quantity"
-                    >
-                      <Minus size={14} />
-                    </button>
-                    <input
-                      type="number"
-                      min={product.minQty || 1}
-                      value={quantity}
-                      onChange={(e) => setQuantity(Math.max(product.minQty || 1, parseInt(e.target.value) || (product.minQty || 1)))}
-                      className="w-16 text-center font-semibold text-sm py-1.5 focus:outline-none"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => setQuantity((q) => q + 1)}
-                      className="px-3 py-2 text-[#1A1A1A] hover:bg-[#1A1A1A]/5 transition"
-                      aria-label="Increase quantity"
-                    >
-                      <Plus size={14} />
-                    </button>
-                  </div>
-                </div>
-                <div className="text-xs text-[#6B6B6B] pt-5">
-                  Min order: {product.minQty || 1} {product.unit?.replace('per ', '')}
-                </div>
-              </div>
-
-              {/* Action buttons: Add to Cart & Get a Quote */}
+              {/* Action buttons: Request a Quote & Enquire via WhatsApp */}
               <div className="flex flex-wrap items-center gap-3 mb-8">
                 <button
-                  onClick={handleAddToCart}
-                  className="btn-gold shadow-lg flex items-center gap-2 px-6 py-3"
-                  id="add-to-cart-btn"
-                >
-                  <ShoppingBag size={18} />
-                  <span>Add to Cart ({formatINR(liveTotal)})</span>
-                </button>
-
-                <button
                   onClick={() => setQuoteOpen(true)}
-                  className="btn-outline-gold px-5 py-3"
+                  className="btn-gold shadow-lg flex items-center gap-2 px-6 py-3"
                   id="get-quote-btn"
                 >
-                  Get a Quote <ArrowRight size={16} />
+                  <span>Request a Custom Quote</span>
+                  <ArrowRight size={16} />
                 </button>
+
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-outline-gold flex items-center gap-2 px-5 py-3"
+                  id="whatsapp-enquiry-btn"
+                >
+                  <MessageSquare size={16} />
+                  <span>Enquire via WhatsApp</span>
+                </a>
               </div>
 
               {/* Feature icons */}
@@ -548,9 +466,7 @@ export default function ProductDetail() {
           <QuoteModal
             product={product}
             onClose={() => setQuoteOpen(false)}
-            selectedVariant={`${selectedFinish.name} • ${selectedMaterial.name}`}
-            currentPrice={liveUnitPrice}
-            quantity={quantity}
+            selectedVariant={variantSummary}
           />
         )}
       </AnimatePresence>
