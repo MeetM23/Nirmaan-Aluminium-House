@@ -1,0 +1,250 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --color-bg-dark: #061411;
+    --color-bg-dark2: #0A1F1A;
+    --color-gold: #C9A15A;
+    --color-gold-light: #E2C285;
+    --color-cream: #F5F0E6;
+    --color-cream2: #EDE8DC;
+    --color-text-dark: #1A1A1A;
+    --color-text-muted: #6B6B6B;
+    --color-text-light: rgba(255,255,255,0.75);
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    color: var(--color-text-dark);
+    background: var(--color-bg-dark);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: var(--color-gold);
+    color: white;
+  }
+}
+
+@layer utilities {
+  /* Typography */
+  .font-serif { font-family: var(--font-serif); }
+  .font-sans { font-family: var(--font-sans); }
+
+  /* Gold gradient */
+  .gold-gradient {
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+  }
+  .gold-gradient-text {
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Eyebrow label */
+  .eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-gold);
+  }
+
+  /* Buttons */
+  .btn-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+    color: #1A1A1A;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-gold:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(201, 161, 90, 0.35);
+  }
+
+  .btn-outline-gold {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: var(--color-gold);
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: 1px solid var(--color-gold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-outline-gold:hover {
+    background: rgba(201, 161, 90, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline-white {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    background: transparent;
+    color: white;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    border: 1px solid rgba(255,255,255,0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .btn-outline-white:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.7);
+    transform: translateY(-1px);
+  }
+
+  /* Circular arrow button */
+  .circle-arrow-btn {
+    width: 2.2rem;
+    height: 2.2rem;
+    min-width: 2.2rem;
+    border-radius: 50%;
+    border: 1px solid rgba(201, 161, 90, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: var(--color-gold);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .circle-arrow-btn:hover {
+    background: linear-gradient(135deg, var(--color-gold), var(--color-gold-light));
+    color: white;
+    border-color: transparent;
+    transform: scale(1.05);
+  }
+
+  /* Nav link */
+  .nav-link {
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    position: relative;
+    padding-bottom: 2px;
+    transition: color 0.3s;
+  }
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--color-gold);
+    transition: width 0.3s ease;
+  }
+  .nav-link:hover { color: var(--color-gold); }
+  .nav-link:hover::after { width: 100%; }
+  .nav-link.active { color: var(--color-gold); }
+  .nav-link.active::after { width: 100%; }
+
+  /* Sections */
+  .section-dark {
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-dark2) 100%);
+  }
+  .section-cream {
+    background: var(--color-cream);
+  }
+
+  /* Product card */
+  .product-card {
+    position: relative;
+    overflow: hidden;
+    background: white;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+  }
+  .product-card .card-img {
+    overflow: hidden;
+    aspect-ratio: 4/3;
+  }
+  .product-card .card-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .product-card:hover .card-img img {
+    transform: scale(1.06);
+  }
+
+  /* Swiper custom */
+  .swiper-button-next,
+  .swiper-button-prev {
+    color: var(--color-gold) !important;
+  }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-track { background: var(--color-bg-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--color-gold); border-radius: 2px; }
+
+  /* Fade in animation */
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in-up {
+    animation: fadeInUp 0.7s ease forwards;
+  }
+
+  /* Shimmer loading */
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+}
